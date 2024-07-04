@@ -1,0 +1,16 @@
+[package]
+name = "profile-app"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name  = "core"
+path  = "core/main.rs"
+
+[[bin]]
+name = "server"
+path = "server/main.rs"
+
+[dependencies]
+clap = { version = "4.5.8", features = ["cargo", "derive"] }
+rocket = { version = "0.5.1", features = ["json", "serde_json"] }
