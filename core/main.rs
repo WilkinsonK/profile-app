@@ -4,10 +4,19 @@ use std::thread;
 
 use clap::{arg, command, ArgAction, ArgMatches, Command};
 
-#[cfg(target_os = "linux")]
-const CLIENT_SOURCE: &str = concat!(env!("PWD"), "/", "client");
-#[cfg(target_os = "windows")]
-const CLIENT_SOURCE: &str = concat!("client");
+const CARGO: &'static str = "cargo";
+#[cfg(windows)]
+const NPM: &'static str = "npm.cmd";
+#[cfg(not(windows))]
+const NPM: &'static str = "npm";
+
+fn subprocess_cargo() -> Subprocess {
+    Subprocess::new(CARGO)
+}
+
+fn subprocess_npm() -> Subprocess {
+    Subprocess::new(NPM)
+}
 
 fn cli() -> Command {
     command!()
@@ -21,12 +30,16 @@ fn cli() -> Command {
 fn cli_start_call(matches: &ArgMatches) {
     let as_release = Arc::new(matches
         .get_one::<bool>("release")
-        .expect("`release` is required to determine how to run application services")
+        .expect(
+        r#"
+            `release` is required to determine how
+            to run application services
+        "#)
         .to_owned());
 
     let use_release = as_release.clone();
     let server = thread::spawn(move || {
-        let mut cmd = &mut Subprocess::new("cargo");
+        let mut cmd = &mut subprocess_cargo();
 
         if *use_release {
             cmd = cmd.arg("--release")
@@ -46,29 +59,33 @@ fn cli_start_call(matches: &ArgMatches) {
 
     let use_release = as_release.clone();
     let client = thread::spawn(move || {
-        std::env::set_current_dir(CLIENT_SOURCE)
-            .expect("client source directory must be available");
+        let mut cmd = &mut subprocess_npm();
 
         if *use_release {
             // Compiles a build of our client
             // application to be used by the
             // server.
-            Subprocess::new("npm")
+            cmd = cmd
                 .arg("run")
                 .arg("build")
-                .spawn()
-                .expect("Must be able to build client app")
         } else {
             // Runs a development instance of the
             // client-side application.
-            Subprocess::new("npm")
+            cmd = cmd
                 .arg("run")
                 .arg("start")
-                .spawn()
-                .expect("Must be able to start client app")
         }
-        .wait()
-        .expect("Must wait for client to terminate");
+
+        let curr_dir = std::env::current_dir().unwrap();
+        std::env::set_current_dir("client").unwrap();
+
+        cmd
+            .spawn()
+            .expect("Must be able to init client app")
+            .wait()
+            .expect("Must wait for client to terminate");
+
+        std::env::set_current_dir(curr_dir).unwrap();
     });
 
     client.join().expect("Must run client successfully");
@@ -78,7 +95,7 @@ fn cli_start_call(matches: &ArgMatches) {
 fn cli_start_init() -> Command {
     Command::new("start")
         .about("Start Profile-App")
-        .arg(arg!(--release).action(ArgAction::SetTrue))
+        .arg(arg!(--release "Build as a release").action(ArgAction::SetTrue))
 }
 
 fn main() {

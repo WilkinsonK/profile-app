@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { Card } from 'react-bootstrap';
+
 
 export class UserBuilder {
   fullName!:    string;
@@ -93,8 +95,8 @@ export class AppProps {
 export default function App(props: AppProps) {
   let user = props.user;
   return (
-    <div>
-      <Card data-bs-theme="dark">
+    <div data-bs-theme="dark">
+      <Card>
         <Card.Header>
           <Card.Title>About Me</Card.Title>
         </Card.Header>

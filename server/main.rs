@@ -1,16 +1,18 @@
-#[cfg(target_os = "linux")]
-const STATIC_ASSETS: &str = concat!(env!("PWD"), "/", "client/build");
-#[cfg(target_os = "windows")]
-const STATIC_ASSETS: &str = concat!("client/build");
+fn static_assets() -> String {
+    let mut dir = std::env::current_dir().unwrap();
+    dir.push("client");
+    dir.push("build");
+    dir.to_str().unwrap().to_owned()
+}
 
-#[rocket::get("/")]
-async fn index() -> Option<rocket::fs::NamedFile> {
-    rocket::fs::NamedFile::open([STATIC_ASSETS, "/", "index.html"].concat()).await.ok()
+#[rocket::get("/api")]
+async fn index() -> &'static str {
+    "Hello, World"
 }
 
 #[rocket::launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount("/public", rocket::fs::FileServer::from(STATIC_ASSETS))
-        .mount("/", rocket::routes![index])
+        .mount("/", rocket::fs::FileServer::from(&static_assets()))
+        .mount("/api", rocket::routes![index])
 }
