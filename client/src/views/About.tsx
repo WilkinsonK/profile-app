@@ -4,7 +4,7 @@ function OverviewCard() {
     return (
         <Card>
             <Card.Header>
-                <Card.Title>A Software Engineer</Card.Title>
+                <Card.Title>Experience and Relevant Technologies</Card.Title>
             </Card.Header>
             <Card.Body>
                 <h3>Languages</h3>
@@ -65,12 +65,15 @@ function OverviewCard() {
     )
 }
 
+
 export default function About() {
     return (
         <Container>
             <Row>
                 <Col>
+                    <br></br>
                     <OverviewCard />
+                    <br></br>
                 </Col>
             </Row>
         </Container>

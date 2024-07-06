@@ -1,4 +1,3 @@
-import Children from 'react';
 import { Card, Container, Row } from 'react-bootstrap';
 
 function CommonContactCard() {
@@ -11,8 +10,6 @@ function CommonContactCard() {
                 <p>
                     Email: keenanwilkinson@outlook.com
                     <br></br>
-                    {/* Phone: (314) 479-2014
-                    <br></br> */}
                     <a href="https://www.linkedin.com/in/keenan-wilkinson-0a23571a8/">LinkedIn</a> | <a href="https://github.com/WilkinsonK">Github</a>
                 </p>
             </Card.Body>
@@ -106,8 +103,11 @@ function FAQItem(props: {question: string, answer: string}) {
 export default function Contact() {
     return (
         <Container>
+            <br></br>
             <FAQCard />
+            <br></br>
             <CommonContactCard />
+            <br></br>
         </Container>
     )
 }

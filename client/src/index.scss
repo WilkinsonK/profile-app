@@ -1,0 +1,32 @@
+@import 'bootstrap/scss/bootstrap';
+
+body {
+    background-color: rgb(176, 245, 204);
+}
+
+#theme-toggle-button {
+    height: 1.5rem;
+    width:  1.5rem;
+}
+
+#theme-toggle-button:hover {
+    cursor: pointer;
+    background-color: #00000033;
+}
+
+#theme-toggle-button:active {
+    transform: scale(0.96);
+}
+
+@include color-mode(dark) {
+    #theme-toggle-button {
+        /* filter: invert(0%) sepia(0%) saturate(7498%) hue-rotate(251deg) brightness(106%) contrast(98%); */
+        filter: invert(100%) sepia(5%) saturate(21%) hue-rotate(111deg) brightness(103%) contrast(100%);
+    }
+}
+
+@include color-mode(light) {
+    #theme-toggle-button {
+        filter: invert(0%) sepia(0%) saturate(7498%) hue-rotate(251deg) brightness(106%) contrast(98%);
+    }
+}
