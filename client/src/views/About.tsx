@@ -94,7 +94,8 @@ export default function About() {
                         "2 years Rust",
                         "2 years Typescript",
                         "4 years Common Web Language (HTML/CSS/JS)"
-                    ]} />
+                    ]}
+                />
                 <br></br>
                 <OverviewListSection1
                     title="Technologies"
@@ -111,7 +112,8 @@ export default function About() {
                     I am most confident in and/or are simply a
                     favorite of mine.
                     "
-                    items={[]} />
+                    items={[]}
+                />
                 <OverviewListSection2
                     title="CI/CD Pipelines and Helper Tools"
                     excerp=""
@@ -119,7 +121,8 @@ export default function About() {
                         "Github Actions",
                         "Jenkins",
                         "Precommit"
-                    ]} />
+                    ]}
+                />
                 <OverviewListSection2
                     title="Database Servers and Languages"
                     excerp=""
@@ -129,7 +132,8 @@ export default function About() {
                         "PostgreSQL",
                         "Redis",
                         "SQL Server"
-                    ]} />
+                    ]}
+                />
                 <OverviewListSection2
                     title="Frontend and UI Frameworks"
                     excerp=""
@@ -137,7 +141,8 @@ export default function About() {
                         "Bootstrap",
                         "React",
                         "Slint"
-                    ]} />
+                    ]}
+                />
                 <OverviewListSection2
                     title="REST and General Web Frameworks"
                     excerp=""
@@ -147,7 +152,8 @@ export default function About() {
                         "Flask",
                         "Rocket",
                         "Spring and Spring Boot"
-                    ]} />
+                    ]}
+                />
             </OverviewCard>
             <br></br>
             <PersonalityCard />

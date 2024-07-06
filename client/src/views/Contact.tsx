@@ -1,17 +1,39 @@
 import { ReactElement } from 'react';
 import { Card, Container, Row } from 'react-bootstrap';
 
-function CommonContactCard() {
+class LinkProps {
+    name: string;
+    href: string;
+
+    constructor(name: string, href: string) {
+        this.name = name;
+        this.href = href;
+    }
+}
+
+class CommonContactProps {
+    availability!: string[];
+    email!:        string;
+    fullName!:     string;
+    links!:        LinkProps[];
+    phone!:        string;
+    title!:        string;
+}
+
+function CommonContactCard(props: CommonContactProps) {
+    let email = props.email !== "" ? <>Email: {props.email}<br></br></> : "";
+    let phone = props.phone !== "" ? <>Phone: {props.phone}<br></br></> : "";
+
     return (
         <Card>
             <Card.Header><Card.Title>Contact Me</Card.Title></Card.Header>
             <Card.Body>
-                <h5>Keenan W. Wilkinson</h5>
-                <h6>Software Engineer | C2H (Long-Term), Freelance, Full-Time</h6>
+                <h5>{props.fullName}</h5>
+                <h6>{props.title} | {props.availability.join(', ')}</h6>
                 <p>
-                    Email: keenanwilkinson@outlook.com
-                    <br></br>
-                    <a href="https://www.linkedin.com/in/keenan-wilkinson-0a23571a8/">LinkedIn</a> | <a href="https://github.com/WilkinsonK">Github</a>
+                    {email}
+                    {phone}
+                    | {props.links.map(link => <><a href={link.href}>{link.name}</a> | </>)}
                 </p>
             </Card.Body>
         </Card>
@@ -109,7 +131,21 @@ export default function Contact() {
                 />
             </FAQCard>
             <br></br>
-            <CommonContactCard />
+            <CommonContactCard
+                availability={[
+                    "C2H (Long-Term)",
+                    "Freelance",
+                    "Full-Time"
+                ]}
+                email="keenanwilkinson@outlook.com"
+                fullName="Keenan W. Wilkinson"
+                links={[
+                    new LinkProps("LinkedIn", "https://www.linkedin.com/in/keenan-wilkinson-0a23571a8/"),
+                    new LinkProps("Github", "https://github.com/WilkinsonK")
+                ]}
+                phone=""
+                title="Software Engineer"
+            />
             <br></br>
         </Container>
     )
