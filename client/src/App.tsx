@@ -38,7 +38,7 @@ export function Navigation() {
           <Nav className="me-auto">
             <Nav.Link
                 href="/home"
-                active={hasCurrentView("/home")}>Home
+                active={hasCurrentView("/home") || hasCurrentView("/")}>Home
             </Nav.Link>
             <Nav.Link
                 href="/about"
