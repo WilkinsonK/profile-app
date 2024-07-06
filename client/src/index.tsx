@@ -7,7 +7,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import './index.scss';
-import './index.css';
 import App from './App';
 
 const root = ReactDOM.createRoot(
