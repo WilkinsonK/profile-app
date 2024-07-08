@@ -4,13 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name  = "pa-admin"
-path  = "core/main.rs"
-
-[[bin]]
 name = "server"
 path = "server/main.rs"
+doc  = true
 
 [dependencies]
-clap = { version = "4.5.8", features = ["cargo", "derive"] }
+anyhow = "1.0.86"
 rocket = { version = "0.5.1", features = ["json", "serde_json"] }
+serde = "1.0.204"
+serde_json = "1.0.120"

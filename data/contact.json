@@ -1,0 +1,23 @@
+[
+    {
+        "availability": [
+            "C2H (Long-Term)",
+            "Freelance",
+            "Full-Time"
+        ],
+        "email": "keenanwilkinson@outlook.com",
+        "fullName": "Keenan W. Wilkinson",
+        "links": [
+            {
+                "name": "LinkedIn",
+                "href": "https://www.linkedin.com/in/keenan-wilkinson-0a23571a8/"
+            },
+            {
+                "name": "Github",
+                "href": "https://github.com/WilkinsonK"
+            }
+        ],
+        "phone": "",
+        "title": "Software Engineer"
+    }
+]

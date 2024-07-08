@@ -9,6 +9,12 @@ class LinkProps {
         this.name = name;
         this.href = href;
     }
+
+    intoElement(): ReactElement {
+        return (
+            <a href={this.href} target="_blank" rel="noreferrer">{this.name}</a>
+        )
+    }
 }
 
 class CommonContactProps {
@@ -33,7 +39,7 @@ function CommonContactCard(props: CommonContactProps) {
                 <p>
                     {email}
                     {phone}
-                    | {props.links.map(link => <><a href={link.href}>{link.name}</a> | </>)}
+                    | {props.links.map(link => <>{link.intoElement()} | </>)}
                 </p>
             </Card.Body>
         </Card>

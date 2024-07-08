@@ -34,7 +34,7 @@ export function Navigation() {
     <>
       <Navbar bg={displayPreferredTheme()} sticky="top">
         <Container>
-          <Navbar.Brand href="home">Very Last Byte</Navbar.Brand>
+          <Navbar.Brand href="/home">Very Last Byte</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link
                 href="/home"

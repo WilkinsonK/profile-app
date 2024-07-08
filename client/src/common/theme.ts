@@ -1,6 +1,6 @@
 const LS_PREFERRED_THEME_KEY: string = "vlb.preferredTheme";
-const PREFERRED_THEME_DARK:   string = "mun-solid.svg";
-const PREFERRED_THEME_LIGHT:  string = "sol-solid.svg";
+const PREFERRED_THEME_DARK:   string = "icon/mun-solid.svg";
+const PREFERRED_THEME_LIGHT:  string = "icon/sol-solid.svg";
 
 enum PreferredTheme {
     Dark,
