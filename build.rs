@@ -9,6 +9,7 @@ fn npm() -> Subprocess {
     Subprocess::new(COMMAND_NPM)
 }
 
+#[cfg(release)]
 fn main() {
     npm()
         .arg("run")
@@ -19,3 +20,6 @@ fn main() {
         .wait()
         .expect("Must be able to build frontend application");
 }
+
+#[cfg(not(release))]
+fn main() {}

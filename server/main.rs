@@ -13,6 +13,7 @@ const APPLICATION_NAME: &str = concat!(
     "/v",
     env!("CARGO_PKG_VERSION"));
 const APPLICATION_STATIC: &str = relative!("client/build");
+const APPLICATION_DATA:   &str = relative!("data");
 
 /// Reads for the static file at the **relative**
 /// path. If the file is not found, then returns
@@ -35,7 +36,7 @@ async fn index() -> Redirect {
 
 #[rocket::get("/download/<file..>")]
 async fn download(file: PathBuf) -> DownloadFile {
-    todo!()
+    DownloadFile::open_rel(Path::new(APPLICATION_DATA), &file)
 }
 
 #[rocket::get("/version")]
@@ -50,5 +51,5 @@ async fn files(file: PathBuf) -> Option<NamedFile> {
 
 #[rocket::launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", rocket::routes![index, files, version])
+    rocket::build().mount("/", rocket::routes![index, download, files, version])
 }
