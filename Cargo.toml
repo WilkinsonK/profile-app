@@ -11,3 +11,4 @@ path    = "server/main.rs"
 [dependencies]
 anyhow = "1.0.86"
 rocket = { version = "0.5.1", features = ["json", "serde_json"] }
+serde = "1.0.204"
