@@ -1,9 +1,9 @@
 use std::process::Command as Subprocess;
 
 #[cfg(windows)]
-const COMMAND_NPM: &'static str = "npm.cmd";
+const COMMAND_NPM: &str = "npm.cmd";
 #[cfg(not(windows))]
-const COMMAND_NPM: &'static str = "npm";
+const COMMAND_NPM: &str = "npm";
 
 fn npm() -> Subprocess {
     Subprocess::new(COMMAND_NPM)
