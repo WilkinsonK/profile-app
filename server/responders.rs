@@ -1,14 +1,44 @@
 //! Custom responders where `Rocket` provided responders are not
 //! viable options.
+use std::fmt::Display;
 use std::fs::File;
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
 use std::pin::Pin;
 
 use rocket::{Request, Response};
-use rocket::http::{ContentType, Status};
+use rocket::http::{ContentType, Header, Status};
 use rocket::response::Responder;
 use rocket::tokio::{fs::File as AsyncFile, io::AsyncRead};
+
+enum ContentDisposition {
+    #[allow(dead_code)]
+    Inline,
+    Attachment(Option<String>)
+}
+
+impl Display for ContentDisposition {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let repr = match self {
+            Self::Inline => {
+                String::from("inline")
+            },
+            Self::Attachment(None) => {
+                String::from("attachment;")
+            },
+            Self::Attachment(Some(n)) => {
+                format!(r#"attachment; filename*="{n}"; filename="{n}""#)
+            }
+        };
+        write!(f, "{}", repr)
+    }
+}
+
+impl<'h> Into<Header<'h>> for ContentDisposition {
+    fn into(self) -> Header<'h> {
+        Header::new("Content-Disposition", self.to_string())
+    }
+}
 
 /// Represents the states related to when a client
 /// requests a file for download. Either the file
@@ -109,11 +139,8 @@ impl DownloadFile {
             .unwrap()
     }
 
-    fn disposition(&self) -> String {
-        match self.filename() {
-            Some(n) => format!("attachment;filename={n}"),
-            None    => String::from("attachment;")
-        }
+    fn disposition(&self) -> ContentDisposition {
+        ContentDisposition::Attachment(self.filename())
     }
 
     fn filename(&self) -> Option<String> {
@@ -141,7 +168,7 @@ impl<'r> Responder<'r, 'static> for DownloadFile {
         match self.status {
             DownloadFileStatus::Found => {
                 res
-                    .raw_header("Content-Disposition", self.disposition())
+                    .header(self.disposition())
                     .header(self.content_type())
                     .streamed_body(self.stream());
             },
