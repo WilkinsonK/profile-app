@@ -68,6 +68,13 @@ impl DownloadFile {
     /// Creates a new instance of `DownloadFile`
     /// responder by attempting to open a file
     /// `name` relative to the `rel` path.
+    /// 
+    /// The full file path is obfuscated like this
+    /// so as to ensure, when an error occurs,
+    /// that `NotFound` messages only produce
+    /// relavent information for the end-user and
+    /// does not expose what they don't need to
+    /// know.
     pub fn open_rel<P>(rel: P, name: P) -> Self
     where
         P: AsRef<Path> + Clone,
