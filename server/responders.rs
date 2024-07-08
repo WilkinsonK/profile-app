@@ -34,9 +34,9 @@ impl Display for ContentDisposition {
     }
 }
 
-impl<'h> Into<Header<'h>> for ContentDisposition {
-    fn into(self) -> Header<'h> {
-        Header::new("Content-Disposition", self.to_string())
+impl<'h> From<ContentDisposition> for Header<'h> {
+    fn from(val: ContentDisposition) -> Self {
+        Self::new("Content-Disposition", val.to_string())
     }
 }
 
@@ -54,12 +54,12 @@ enum DownloadFileStatus {
     NotFound,
 }
 
-impl Into<Status> for DownloadFileStatus {
-    fn into(self) -> Status {
-        match self {
-            Self::Error(_) => Status::InternalServerError,
-            Self::Found    => Status::Ok,
-            Self::NotFound => Status::NotFound,
+impl From<DownloadFileStatus> for Status {
+    fn from(val: DownloadFileStatus) -> Self {
+        match val {
+            DownloadFileStatus::Error(_) => Self::InternalServerError,
+            DownloadFileStatus::Found    => Self::Ok,
+            DownloadFileStatus::NotFound => Self::NotFound,
         }
     }
 }
@@ -148,7 +148,7 @@ impl DownloadFile {
             .name
             .file_name()
             .and_then(|s| s.to_str())
-            .and_then(|s| Some(s.to_owned()))
+            .map(|s| s.to_owned())
     }
 
     fn status(&self) -> Status {

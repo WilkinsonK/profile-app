@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { Card, Container } from "react-bootstrap";
+import { Card, Container, ListGroup } from "react-bootstrap";
 
 class OverviewListSectionProps {
     title!:  string;
@@ -18,9 +18,12 @@ function OverviewListSection(props: OverviewListSectionProps, renderer: olsRende
     let items;
     if (props.items.length > 0) {
         items = (
-            <ul>
-                {props.items.map(item => <li>{item}</li>)}
-            </ul>
+            <>
+            <ListGroup>
+                {props.items.map(item => <ListGroup.Item>{item}</ListGroup.Item>)}
+            </ListGroup>
+            <br></br>
+            </>
         );
     }
     return renderer(props.title, excerp, items)

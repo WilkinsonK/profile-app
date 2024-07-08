@@ -37,9 +37,9 @@ impl From<std::io::Error> for BuildErr {
     }
 }
 
-impl<R> Into<BuildResult<R>> for BuildErr {
-    fn into(self) -> BuildResult<R> {
-        Err(self)
+impl<R> From<BuildErr> for BuildResult<R> {
+    fn from(val: BuildErr) -> Self {
+        Err(val)
     }
 }
 

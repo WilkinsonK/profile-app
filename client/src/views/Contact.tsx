@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
-import { Card, Container, Row } from 'react-bootstrap';
+import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
+import { createDownloadOnClick } from '../common/download';
 
 class LinkProps {
     name: string;
@@ -34,13 +35,21 @@ function CommonContactCard(props: CommonContactProps) {
         <Card>
             <Card.Header><Card.Title>Contact Me</Card.Title></Card.Header>
             <Card.Body>
-                <h5>{props.fullName}</h5>
-                <h6>{props.title} | {props.availability.join(', ')}</h6>
-                <p>
-                    {email}
-                    {phone}
-                    | {props.links.map(link => <>{link.intoElement()} | </>)}
-                </p>
+                <Container>
+                <Row>
+                    <h5>{props.fullName}</h5>
+                    <h6>{props.title} | {props.availability.join(', ')}</h6>
+                    <p>
+                        {email}
+                        {phone}
+                    </p>
+                </Row>
+                <Row>
+                    <Col>| {props.links.map(link => <>{link.intoElement()} | </>)}</Col>
+                    <Col md="auto"></Col>
+                    <Col sm md={2}><Button onClick={createDownloadOnClick("resume.pdf")}>Resume</Button></Col>
+                </Row>
+                </Container>
             </Card.Body>
         </Card>
     )
@@ -49,8 +58,7 @@ function CommonContactCard(props: CommonContactProps) {
 function FAQCard(props: { children: ReactElement[] }) {
     return (
         <Card>
-            <Card.Header>
-                <Card.Title>Frequently Asked Questions</Card.Title></Card.Header>
+            <Card.Header><Card.Title>Frequently Asked Questions</Card.Title></Card.Header>
             <Card.Body>
                 <h1>Common Q's</h1>
                 <p>
@@ -77,13 +85,15 @@ function FAQCard(props: { children: ReactElement[] }) {
 
 function FAQItem(props: {question: string, answer: string}) {
     return (
+        <>
         <Row>
-            <p>
-                <b>Q</b>: {props.question}
-                <br></br>
-                <b>A</b>: {props.answer}
-            </p>
+            <ListGroup>
+                <ListGroup.Item><b>Q</b>: {props.question}</ListGroup.Item>
+                <ListGroup.Item><b>A</b>: {props.answer}</ListGroup.Item>
+            </ListGroup>
         </Row>
+        <br></br>
+        </>
     )
 }
 
