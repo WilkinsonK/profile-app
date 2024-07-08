@@ -42,21 +42,25 @@ impl Into<Status> for DownloadFile {
 
 impl<'r> Responder<'r, 'static> for DownloadFile {
     fn respond_to(self, request: &'r Request<'_>) -> rocket::response::Result<'static> {
-        let mut res = Response::build().status(self.clone().into());
+        let mut res = Response::build();
+        res.status(self.clone().into());
 
-        match self {
+        let body = match self {
             Self::Error(s) => {
-                res.sized_body(s.len(), Cursor::new(s))
+                Cursor::new(s)
             },
             Self::NotFound(path) => {
-                let fln = path
+                let pathc = path.to_owned();
+                let fln = pathc
                     .file_name()
                     .unwrap();
-                res.sized_body(fln.len(), Curson::new(fln))
+                Cursor::new(fln.to_str().unwrap().to_owned())
             },
             Self::Found(_) => {
                 todo!()
             }
-        }.ok()
+        };
+        res.sized_body(body.get_ref().len(), body);
+        res.ok()
     }
 }
