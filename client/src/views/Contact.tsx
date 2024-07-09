@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
+import { Button, Card, Container, Stack } from 'react-bootstrap';
 import { createDownloadOnClick } from '../common/download';
 
 class LinkProps {
@@ -33,119 +33,44 @@ function CommonContactCard(props: CommonContactProps) {
 
     return (
         <Card>
-            <Card.Header><Card.Title>Contact Me</Card.Title></Card.Header>
+            <Card.Header><Card.Title>My Information</Card.Title></Card.Header>
             <Card.Body>
-                <Container>
-                <Row>
-                    <h5>{props.fullName}</h5>
-                    <h6>{props.title} | {props.availability.join(', ')}</h6>
-                    <p>
-                        {email}
-                        {phone}
-                    </p>
-                </Row>
-                <Row>
-                    <Col>| {props.links.map(link => <>{link.intoElement()} | </>)}</Col>
-                    <Col md="auto"></Col>
-                    <Col sm md={2}><Button onClick={createDownloadOnClick("resume.pdf")}>Resume</Button></Col>
-                </Row>
-                </Container>
-            </Card.Body>
-        </Card>
-    )
-}
-
-function FAQCard(props: { children: ReactElement[] }) {
-    return (
-        <Card>
-            <Card.Header><Card.Title>Frequently Asked Questions</Card.Title></Card.Header>
-            <Card.Body>
-                <h1>Common Q's</h1>
+                <h5>{props.fullName}</h5>
+                <h6>{props.title} | {props.availability.join(', ')}</h6>
                 <p>
-                    Before making an attempt to contact me directly, you may
-                    want to review some of the below <b>common Q's</b>. These
-                    listed are generally the most often asked or most likely
-                    reason others in the past have reached out.
+                    {email}
+                    {phone}
+                    | {props.links.map(link => <>{link.intoElement()} | </>)}
                 </p>
-                <p>
-                    The majority of what you'll read here is only going to be
-                    a top-level view of what I might still be able to elaborate
-                    further on. However, there is a high likelihood that these
-                    topics have also been covered by other material on my
-                    website.
-                </p>
-
-                <Container>
-                    {props.children.map(child => child)}
-                </Container>
             </Card.Body>
+            <Card.Footer>
+                <Stack direction="horizontal" gap={1}>
+                    <div className="p-1"></div>
+                    <div className="p-1 ms-auto"></div>
+                    <div className="p-1">
+                        <Button
+                            onClick={createDownloadOnClick("resume.pdf", "Keenan Wilkinson Resume.pdf")}>
+                            Download Resume
+                        </Button>
+                    </div>
+                </Stack>
+            </Card.Footer>
         </Card>
-    )
-}
-
-function FAQItem(props: {question: string, answer: string}) {
-    return (
-        <>
-        <Row>
-            <ListGroup>
-                <ListGroup.Item><b>Q</b>: {props.question}</ListGroup.Item>
-                <ListGroup.Item><b>A</b>: {props.answer}</ListGroup.Item>
-            </ListGroup>
-        </Row>
-        <br></br>
-        </>
     )
 }
 
 export default function Contact() {
+    let linkedInLink = "https://www.linkedin.com/in/keenan-wilkinson-0a23571a8/";
+
     return (
         <Container>
             <br></br>
-            <FAQCard>
-                <FAQItem
-                    question="Tell us something about yourself?"
-                    answer="
-                    I am a software engineer, a programming polyglot, of 5
-                    years and counting. My expertise is strongest with
-                    Python 3+ and Rust, but have leveraged many others at
-                    this point to complete business expectations and client
-                    dreams.
-                    "
-                />
-                <FAQItem
-                    question="
-                    What technologies have you used in a professional
-                    environment?
-                    "
-                    answer="
-                    I've worked with a number of technologies in the past,
-                    all of which at a Full-Stack capacity. I am capable of
-                    the design, architecture and hosting of web applications
-                    from the ground up.
-                    "
-                />
-                <FAQItem
-                    question="
-                    Would you be comfortable taking a contract position
-                    (6-12mo)?
-                    "
-                    answer="
-                    Outside of my freelancing work, I prefer long-term
-                    opportunities as they promise more stability and are
-                    easier to feel invested in. An important component of
-                    working with a team to achieve a unified goal.
-                    "
-                />
-                <FAQItem
-                    question="Are you open to new projects?"
-                    answer="
-                    For freelance and/or smaller projects that can be
-                    completed quickly without causing conflicts, I am happy
-                    to take the time to discuss them and potentially take
-                    on the challenge.
-                    "
-                />
-            </FAQCard>
+            <h1>Contact Me</h1>
+            <p>
+                Please do reach out. I will try to answer emails as swiftly as
+                possible. However, it is more effective to reach me via <a href={linkedInLink}>LinkedIn</a>.
+                Additionally you are invited to download a copy of my resume.
+            </p>
             <br></br>
             <CommonContactCard
                 availability={[
@@ -156,7 +81,7 @@ export default function Contact() {
                 email="keenanwilkinson@outlook.com"
                 fullName="Keenan W. Wilkinson"
                 links={[
-                    new LinkProps("LinkedIn", "https://www.linkedin.com/in/keenan-wilkinson-0a23571a8/"),
+                    new LinkProps("LinkedIn", linkedInLink),
                     new LinkProps("Github", "https://github.com/WilkinsonK")
                 ]}
                 phone=""
