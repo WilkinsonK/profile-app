@@ -169,43 +169,33 @@ export default function About() {
                 legacy systems takes exceptional consideration and cooperation
                 among stakeholders.
             </p>
-            <LinkedH5 href="#planning-and-collab">Planning and Collaboration</LinkedH5>
-            <p>
-                While glossing over literal modes of communication (i.e Teams,
-                Email, etc.) scrum masters, BSAs, PMs and clients fawn over the
-                tools that assist the business in understanding the progress
-                being done when carrying out a plan. These concepts and
-                platforms do work even if the general consensus is that they
-                might be evil.
-            </p>
-            <LinkedH5 href="#cicd-and-qaqc">CI/CD and QA/QC</LinkedH5>
-            <p>
-                There's another side to the collab and planning, where
-                developers come together to appeal to the former. What's most
-                important here is how a project is maintained prior to
-                deployment, along with deployment itself. We have ways of taking
-                "snapshots" of our project where we can work on new features
-                separately from what is already available in production. Ways to
-                enforce the formatting of the code to make it more predictable
-                and easier to read across an entire team of developers.
-                Automation of how to test, validate and package the project
-                if/when we've hit the end of our release cycle. The meat and
-                potatoes of being able to effectively create a reliable product
-                that can grow and change with minimal hiccups.
-            </p>
             <Row>
                 <Col>
-                    <Card>
-                        <Card.Header><Card.Title>Planning and Collaboration</Card.Title></Card.Header>
-                        <ListGroup variant="flush">
-                            <ListGroup.Item>Jira/Atlassian</ListGroup.Item>
-                            <ListGroup.Item>Agile Development</ListGroup.Item>
-                        </ListGroup>
-                    </Card>
+                    <LinkedH5 href="#planning-and-collab">Planning and Collaboration</LinkedH5>
+                    <p>
+                        While glossing over literal modes of communication (i.e Teams,
+                        Email, etc.) scrum masters, BSAs, PMs and clients fawn over the
+                        tools that assist the business in understanding the progress
+                        being done when carrying out a plan. These concepts and
+                        platforms do work even if the general consensus is that they
+                        might be evil.
+                    </p>
                 </Col>
                 <Col>
                     <Card>
-                        <Card.Header><Card.Title>CI/CD Pipelines and Helper Tools</Card.Title></Card.Header>
+                        <ListGroup variant="flush">
+                            <ListGroup.Item>Jira/Atlassian</ListGroup.Item>
+                            <ListGroup.Item>Agile Development</ListGroup.Item>
+                            <ListGroup.Item>Architectural Mapping</ListGroup.Item>
+                        </ListGroup>
+                    </Card>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col>
+                    <Card>
+                        {/* <Card.Header><Card.Title>CI/CD Pipelines and Helper Tools</Card.Title></Card.Header> */}
                         <ListGroup variant="flush">
                             <ListGroup.Item>Docker</ListGroup.Item>
                             <ListGroup.Item>Git</ListGroup.Item>
@@ -216,6 +206,23 @@ export default function About() {
                             <ListGroup.Item>Pytest</ListGroup.Item>
                         </ListGroup>
                     </Card>
+                </Col>
+                <Col>
+                    <LinkedH5 href="#cicd-and-qaqc">CI/CD, QA/QC & Productivity</LinkedH5>
+                    <p>
+                        There's another side to the collab and planning, where
+                        developers come together to appeal to the former. What's most
+                        important here is how a project is maintained prior to
+                        deployment, along with deployment itself. We have ways of taking
+                        "snapshots" of our project where we can work on new features
+                        separately from what is already available in production. Ways to
+                        enforce the formatting of the code to make it more predictable
+                        and easier to read across an entire team of developers.
+                        Automation of how to test, validate and package the project
+                        if/when we've hit the end of our release cycle. The meat and
+                        potatoes of being able to effectively create a reliable product
+                        that can grow and change with minimal hiccups.
+                    </p>
                 </Col>
             </Row>
             <br></br>
