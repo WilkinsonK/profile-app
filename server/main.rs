@@ -3,16 +3,18 @@ mod responders;
 
 use std::path::{Path, PathBuf};
 
+use models::ContactItem;
 use rocket::fs::{relative, NamedFile};
 use rocket::response::Redirect;
 
 use responders::DownloadFile;
+use rocket::serde::json::{serde_json, Json};
 
 const APPLICATION_NAME: &str = concat!(
     env!("CARGO_PKG_NAME"),
     "/v",
     env!("CARGO_PKG_VERSION"));
-const APPLICATION_STATIC: &str = relative!("client/build");
+const APPLICATION_STATIC: &str = relative!("static");
 const APPLICATION_DATA:   &str = relative!("data");
 
 /// Reads for the static file at the **relative**
@@ -34,6 +36,13 @@ async fn index() -> Redirect {
     Redirect::permanent(rocket::uri!("/home"))
 }
 
+#[rocket::get("/info/contact")]
+async fn contact() -> Json<Vec<ContactItem>> {
+    let path = Path::new(APPLICATION_DATA).join("contact.json");
+    let data = std::fs::read_to_string(path).expect("contact.json must exist");
+    Json(serde_json::from_str(&data).expect("parse ContactItem from data"))
+}
+
 #[rocket::get("/download/<file..>")]
 async fn download(file: PathBuf) -> DownloadFile {
     DownloadFile::open_rel(Path::new(APPLICATION_DATA), &file)
@@ -51,5 +60,12 @@ async fn files(file: PathBuf) -> Option<NamedFile> {
 
 #[rocket::launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", rocket::routes![index, download, files, version])
+    rocket::build()
+        .mount("/", rocket::routes![
+            index,
+            contact,
+            download,
+            files,
+            version
+        ])
 }

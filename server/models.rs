@@ -1,7 +1,7 @@
 use rocket::serde::{Deserialize, Serialize};
 
 #[derive(Clone, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", crate = "rocket::serde")]
 pub struct ContactItem {
     availability: Vec<String>,
     email:        String,
