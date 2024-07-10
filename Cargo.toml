@@ -12,3 +12,6 @@ path    = "server/main.rs"
 anyhow = "1.0.86"
 rocket = { version = "0.5.1", features = ["json", "serde_json"] }
 serde = "1.0.204"
+
+[build-dependencies]
+copy_dir = "0.1.3"
