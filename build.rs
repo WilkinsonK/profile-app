@@ -1,4 +1,4 @@
-use std::{fmt::{Debug, Display}, process::Command as Subprocess};
+use std::{fmt::{Debug, Display}, path::Path, process::Command as Subprocess};
 
 /// NodeJS `npm` command name.
 #[cfg(windows)]
@@ -43,6 +43,57 @@ impl<R> From<BuildErr> for BuildResult<R> {
     }
 }
 
+/// Wrapper around a callable. Allows for a user
+/// to apply additional attributes or conditions
+/// to the callback.
+struct OnRelease<Call, Ret>
+where 
+    Call: FnOnce() -> BuildResult<Ret>,
+{
+    callback:  Call,
+    predicate: Option<fn() -> bool>
+}
+
+impl<Call, Ret> OnRelease<Call, Ret>
+where
+    Call: FnOnce() -> BuildResult<Ret>,
+{
+    pub fn new(callback: Call) -> Self {
+        Self { callback, predicate: None }
+    }
+
+    /// Calls the wrapped function. If a
+    /// predictate was declared, first check if
+    /// the result is `true` and then executes the
+    /// callback.
+    pub fn call(self) -> Option<BuildResult<Ret>> {
+        match self.predicate {
+            Some(p) => {
+                p().then(|| (self.callback)()).or_else(|| None)
+            }
+            None => Some((self.callback)())
+        }
+    }
+
+    /// Declares a callaback function to use as
+    /// validation prior to executing the
+    /// callaback.
+    pub fn only_if(mut self, p: fn() -> bool) -> Self
+    {
+        self.predicate.replace(p);
+        self
+    }
+}
+
+impl<Call, Ret> From<Call> for OnRelease<Call, Ret>
+where
+    Call: FnOnce() -> BuildResult<Ret>,
+{
+    fn from(value: Call) -> Self {
+        Self::new(value)
+    }
+}
+
 /// Initializes a `Command` as `npm`.
 fn npm() -> Subprocess {
     Subprocess::new(COMMAND_NPM)
@@ -50,19 +101,24 @@ fn npm() -> Subprocess {
 
 /// Only calls the function if running as a
 /// release build.
-fn release_only<F, R>(once: F) -> BuildResult<R>
+fn release_only<O, Call, Ret>(once: O) -> BuildResult<Ret>
 where
-    F: FnOnce() -> BuildResult<R>,
-    R: Default
+    O:    Into<OnRelease<Call, Ret>>,
+    Call: FnOnce() -> BuildResult<Ret>,
+    Ret:  Default,
 {
     match std::env::var("PROFILE") {
-        Ok(value) if value == "release" => once(),
-        _ => Ok(R::default())
-    }
+        Ok(value) if value == "release" => once.into().call(),
+        _ => None
+    }.unwrap_or_else(|| Ok(Ret::default()))
+}
+
+fn client_assets_exist() -> bool {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("client").exists()
 }
 
 fn main() -> BuildResult<()> {
-    release_only(|| {
+    release_only(OnRelease::new(|| {
         println!("BUILD: compiling client front-end app");
         npm()
             .arg("run")
@@ -71,7 +127,13 @@ fn main() -> BuildResult<()> {
             .spawn()?
             .wait()?;
         Ok(())
-    })?;
+    }).only_if(client_assets_exist))?;
+
+    release_only(OnRelease::new(|| {
+        println!("BUILD: moving built front-end assets to `static`");
+        copy_dir::copy_dir("client/build", "static")?;
+        Ok(())
+    }).only_if(client_assets_exist))?;
 
     Ok(())
 }
