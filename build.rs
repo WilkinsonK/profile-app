@@ -1,4 +1,8 @@
-use std::{fmt::{Debug, Display}, path::Path, process::Command as Subprocess};
+use std::{fmt::{Debug, Display}, path::{Path, PathBuf}, process::Command as Subprocess};
+
+/// - * ------------------------------------- * -
+/// - * - Command Aliases                   - * -
+/// - * ------------------------------------- * -
 
 /// NodeJS `npm` command name.
 #[cfg(windows)]
@@ -6,6 +10,15 @@ const COMMAND_NPM: &str = "npm.cmd";
 /// NodeJS `npm` command name.
 #[cfg(not(windows))]
 const COMMAND_NPM: &str = "npm";
+
+/// Initializes a `Command` as `npm`.
+fn npm() -> Subprocess {
+    Subprocess::new(COMMAND_NPM)
+}
+
+/// - * ------------------------------------- * -
+/// - * - Result Alias Implementations      - * -
+/// - * ------------------------------------- * -
 
 /// `Result` alias for our build scripts to allow
 /// for custom error handles.
@@ -43,12 +56,28 @@ impl<R> From<BuildErr> for BuildResult<R> {
     }
 }
 
-/// Wrapper around a callable. Allows for a user
-/// to apply additional attributes or conditions
-/// to the callback.
+/// - * ------------------------------------- * -
+/// - * - DoCall Types & Interface          - * -
+/// - * ------------------------------------- * -
+
+/// Type has, or is, a callable which returns
+/// a `BuildResult`.
+trait DoCall {
+    type Output;
+    /// Execute the callback returning its result.
+    fn do_call(&self) -> Option<BuildResult<Self::Output>>;
+    /// Determines whether `do_call` should be
+    /// called.
+    #[inline(never)]
+    fn should_call(&self) -> bool { true }
+}
+
+/// `DoCall` type which allows the callable to
+/// only be executed if the build profile is
+/// `release`.
 struct OnRelease<Call, Ret>
 where 
-    Call: FnOnce() -> BuildResult<Ret>,
+    Call: Fn() -> BuildResult<Ret>,
 {
     callback:  Call,
     predicate: Option<fn() -> bool>
@@ -56,23 +85,10 @@ where
 
 impl<Call, Ret> OnRelease<Call, Ret>
 where
-    Call: FnOnce() -> BuildResult<Ret>,
+    Call: Fn() -> BuildResult<Ret>,
 {
     pub fn new(callback: Call) -> Self {
         Self { callback, predicate: None }
-    }
-
-    /// Calls the wrapped function. If a
-    /// predictate was declared, first check if
-    /// the result is `true` and then executes the
-    /// callback.
-    pub fn call(self) -> Option<BuildResult<Ret>> {
-        match self.predicate {
-            Some(p) => {
-                p().then(|| (self.callback)()).or_else(|| None)
-            }
-            None => Some((self.callback)())
-        }
     }
 
     /// Declares a callaback function to use as
@@ -85,40 +101,80 @@ where
     }
 }
 
+impl<Call, Ret> DoCall for OnRelease<Call, Ret>
+where
+    Call: Fn() -> BuildResult<Ret>,
+{
+    type Output = Ret;
+
+    fn should_call(&self) -> bool {
+        match std::env::var("PROFILE") {
+            Ok(profile) if profile == "release" => true,
+            _ => false
+        }
+    }
+
+    fn do_call(&self) -> Option<BuildResult<Self::Output>> {
+        match self.predicate {
+            Some(p) => {
+                p().then(|| (self.callback)()).or_else(|| None)
+            }
+            None => Some((self.callback)())
+        }
+    }
+}
+
 impl<Call, Ret> From<Call> for OnRelease<Call, Ret>
 where
-    Call: FnOnce() -> BuildResult<Ret>,
+    Call: Fn() -> BuildResult<Ret>,
 {
     fn from(value: Call) -> Self {
         Self::new(value)
     }
 }
 
-/// Initializes a `Command` as `npm`.
-fn npm() -> Subprocess {
-    Subprocess::new(COMMAND_NPM)
-}
-
-/// Only calls the function if running as a
-/// release build.
-fn release_only<O, Call, Ret>(once: O) -> BuildResult<Ret>
+/// Execute the caller if it should be called.
+fn do_call<Ret>(doer: &dyn DoCall<Output = Ret>) -> BuildResult<Ret>
 where
-    O:    Into<OnRelease<Call, Ret>>,
-    Call: FnOnce() -> BuildResult<Ret>,
-    Ret:  Default,
+    Ret: Default,
 {
-    match std::env::var("PROFILE") {
-        Ok(value) if value == "release" => once.into().call(),
-        _ => None
+    if doer.should_call() {
+        doer.do_call()
+    } else {
+        None
     }.unwrap_or_else(|| Ok(Ret::default()))
 }
 
+/// - * ------------------------------------- * -
+/// - * - Main & Other Driver Code          - * -
+/// - * ------------------------------------- * -
+
+/// Returns the path to the assets for building
+/// the front-end application.
+fn client_assets() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("client")
+}
+
+/// Determines if `client` subdirectory exists in
+/// the project assets.
 fn client_assets_exist() -> bool {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("client").exists()
+    client_assets().exists()
+}
+
+/// Returns the destination path for where the
+/// build front-end application will be moved to.
+fn static_assets() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("static")
+}
+
+/// Determines if `static` subdirectory exists in
+/// the project assets.
+fn static_assets_exists() -> bool {
+    static_assets().exists()
 }
 
 fn main() -> BuildResult<()> {
-    release_only(OnRelease::new(|| {
+    do_call(&OnRelease::new(|| {
         println!("BUILD: compiling client front-end app");
         npm()
             .arg("run")
@@ -129,9 +185,12 @@ fn main() -> BuildResult<()> {
         Ok(())
     }).only_if(client_assets_exist))?;
 
-    release_only(OnRelease::new(|| {
+    do_call(&OnRelease::new(|| {
         println!("BUILD: moving built front-end assets to `static`");
-        copy_dir::copy_dir("client/build", "static")?;
+        if static_assets_exists() {
+            std::fs::remove_dir_all(static_assets())?;
+        }
+        copy_dir::copy_dir(client_assets().join("build"), "static")?;
         Ok(())
     }).only_if(client_assets_exist))?;
 
