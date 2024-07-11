@@ -53,11 +53,11 @@ export async function doFetchContacts(): Promise<ContactProps[]> {
     try {
         const res = await fetch("/info/contact");
         if (!res.ok) {
-            throw new Error(`HTTP error: Status ${res.status}`)
+            throw new Error(`HTTP error: Status ${res.status}`);
         }
         data = await res.json();
     } catch (err) {
-        console.log(`error occurred trying to fetch contact data: ${err}`)
+        console.log(`error occurred trying to fetch contact data: ${err}`);
         data = [];
     } finally {
         return data;

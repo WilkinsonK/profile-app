@@ -32,5 +32,11 @@ To build the container you need to ensure that you mount to the `data`
 directory, but otherwise it should be as simple as:
 ```bash
 $ docker build -t profile-app .
-$ docker run --mount type=bind,source="$(pwd)"/data,target=server/data` -p 8000:8000 profile-app
+$ docker run -it --name monsterous-fart -p 8000:8000 profile-app
 ```
+
+## Remaining Tasks ##
+- [ ] expose my top pinned projects on GitHub.
+- [ ] expose commits to main for this project.
+- [ ] enable Prometheus metrics for API calls.
+- [ ] restrict access with token authentication.

@@ -161,6 +161,12 @@ fn client_assets_exist() -> bool {
     client_assets().exists()
 }
 
+/// Returns the path to the data assets related
+/// to this application.
+fn data_assets() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("data")
+}
+
 /// Returns the destination path for where the
 /// build front-end application will be moved to.
 fn static_assets() -> PathBuf {
@@ -193,6 +199,14 @@ fn main() -> BuildResult<()> {
         copy_dir::copy_dir(client_assets().join("build"), "static")?;
         Ok(())
     }).only_if(client_assets_exist))?;
+
+    std::fs::write(
+        data_assets().join("VERSION.txt"),
+        format!("{}/v{}-{}",
+            env!("CARGO_PKG_NAME"),
+            env!("CARGO_PKG_VERSION"),
+            std::env::var("PROFILE").unwrap_or("unknown".into()))
+    )?;
 
     Ok(())
 }
