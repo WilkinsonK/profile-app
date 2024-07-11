@@ -25,11 +25,12 @@ building as a docker image.
 
 ### Crates & Containers ###
 This project contains a `Dockerfile` file. This allows us to create an
-image of the built, release version, instance that can be distributed
-across multiple containers (hooray).
+image of the built, release, instance that can be distributed across
+multiple containers (hooray).
 
 To build the container you need to ensure that you mount to the `data`
 directory, but otherwise it should be as simple as:
 ```bash
-$ docker build -t profile-app --mount type=bind,source="$(pwd)"/data,target=server/data` .
+$ docker build -t profile-app .
+$ docker run --mount type=bind,source="$(pwd)"/data,target=server/data` -p 8000:8000 profile-app
 ```
