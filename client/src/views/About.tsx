@@ -1,46 +1,12 @@
-import { Children } from "react";
 import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 
-type ComponentChildren = JSX.Element | readonly JSX.Element[] | string;
-
-function LinkedH1(props: { children: ComponentChildren, href?: string }) {
-    return (
-        <h1>
-            <a href={props.href} className="heading-anchor-link">
-                <i className="fas fa-link"></i>
-            </a>
-            {Children.map(props.children, child => child)}
-        </h1>
-    )
-}
-
-function LinkedH3(props: { children: ComponentChildren, href?: string }) {
-    return (
-        <h3>
-            <a href={props.href} className="heading-anchor-link">
-                <i className="fas fa-link"></i>
-            </a>
-            {Children.map(props.children, child => child)}
-        </h3>
-    )
-}
-
-function LinkedH5(props: { children: ComponentChildren, href?: string }) {
-    return (
-        <h5>
-            <a href={props.href} className="heading-anchor-link">
-                <i className="fas fa-link"></i>
-            </a>
-            {Children.map(props.children, child => child)}
-        </h5>
-    )
-}
+import Linked from "../components/Linked";
 
 export default function About() {
     return (
         <Container>
             <br></br>
-            <LinkedH1 href="#experience">Experience and Relevant Technologies</LinkedH1>
+            <Linked.H1 href="#experience">Experience and Relevant Technologies</Linked.H1>
             <p>
                 As a professional, I have been required to be
                 flexible and have needed to work with a tech-stack
@@ -55,7 +21,7 @@ export default function About() {
             </p>
             <br></br>
 
-            <LinkedH3 href="#core-technical">Core Technical</LinkedH3>
+            <Linked.H3 href="#core-technical">Core Technical</Linked.H3>
             <p>
                 Fundamentally as a developer, I have to sell myself as
                 someone who specializes in certain areas to advertise
@@ -102,7 +68,7 @@ export default function About() {
             </Row>
             <br></br>
 
-            <LinkedH3 href="#web">Web</LinkedH3>
+            <Linked.H3 href="#web">Web</Linked.H3>
             <p>
                 It's all about the "W". In the case of modern developers and IT,
                 It's all about the "WWW". From top to bottom, if you can't
@@ -157,7 +123,7 @@ export default function About() {
             </Row>
             <br></br>
 
-            <LinkedH3 href="#development-lifecycle">Development Lifecycle</LinkedH3>
+            <Linked.H3 href="#development-lifecycle">Development Lifecycle</Linked.H3>
             <p>
                 All things have a beginning and an end. Software is no
                 exception. There must be first the idea, which leads into
@@ -171,7 +137,7 @@ export default function About() {
             </p>
             <Row>
                 <Col>
-                    <LinkedH5 href="#planning-and-collab">Planning and Collaboration</LinkedH5>
+                    <Linked.H5 href="#planning-and-collab">Planning and Collaboration</Linked.H5>
                     <p>
                         While glossing over literal modes of communication (i.e Teams,
                         Email, etc.) scrum masters, BSAs, PMs and clients fawn over the
@@ -208,7 +174,7 @@ export default function About() {
                     </Card>
                 </Col>
                 <Col>
-                    <LinkedH5 href="#cicd-and-qaqc">CI/CD, QA/QC & Productivity</LinkedH5>
+                    <Linked.H5 href="#cicd-and-qaqc">CI/CD, QA/QC & Productivity</Linked.H5>
                     <p>
                         There's another side to the collab and planning, where
                         developers come together to appeal to the former. What's most
