@@ -31,6 +31,9 @@ COPY ./Rocket.toml /server/
 # executable.
 RUN apk update && apk add openssl ca-certificates
 
+ENV GITHUB_ACCESS_TOKEN=""
+ENV GITHUB_USER=""
+
 WORKDIR /server
 EXPOSE 8000
 CMD [ "/server/server" ]
