@@ -30,7 +30,15 @@ export default function RepoCard(props: { name: string }) {
     }, [props]);
 
     let header   = <><Spinner></Spinner></>;
-    let content  = <><Placeholder></Placeholder></>;
+    let content  = (
+        <>
+        <Placeholder as={Card.Text} animation="glow">
+            <Placeholder xs={5}/>
+            <Placeholder xs={11}/>
+            <Placeholder xs={7}/>
+        </Placeholder>
+        </>
+    );
     let license  = <i>No Licsense</i>;
     let language = <i>No Language</i>;
     if (!loading) {
