@@ -72,7 +72,7 @@ export default function RepoCard(props: { name: string }) {
     }
 
     return (
-        <Card className="ms-auto" style={{ width: '50%' }}>
+        <Card className="ms-auto">
             <Card.Header>{header}</Card.Header>
             <Card.Body>{content}</Card.Body>
         </Card>
