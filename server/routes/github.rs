@@ -1,5 +1,5 @@
-use octocrab::{models::{repos::RepoCommit, Repository}, Octocrab};
-use rocket::{response::{status::NotFound, Redirect}, routes, serde::json::Json, Build, Rocket};
+use octocrab::{models::{repos::{Content, RepoCommit}, Repository}, Octocrab};
+use rocket::{response::status::NotFound, routes, serde::json::Json, Build, Rocket};
 
 use crate::config::{
     github_access_token,
@@ -8,6 +8,9 @@ use crate::config::{
 
 pub fn mount(rck: Rocket<Build>) -> Rocket<Build> {
     rck.mount("/github", routes![
+        find_commits,
+        find_commits_this,
+        find_readme,
         list_commits,
         list_commits_this,
         repository,
@@ -34,7 +37,55 @@ async fn repository_this() -> Json<Repository> {
     Json(found)
 }
 
-#[rocket::get("/<repo>/commits?<page>", rank = 2)]
+#[rocket::get("/<repo>/commits/<commit>", rank = 18)]
+async fn find_commits(repo: &str, commit: &str) -> Result<Json<Vec<RepoCommit>>, NotFound<String>> {
+    let repo = match get_one_repository(repo).await {
+        Some(r) => r,
+        None    => return Err(NotFound("repository not found".to_string()))
+    };
+
+    let commit = client()
+        .commits(github_user(), repo.name)
+        .get(commit)
+        .await;
+
+    match commit {
+        Ok(c)  => Ok(Json(vec![c])),
+        Err(e) => Err(NotFound(e.to_string()))
+    }
+}
+
+#[rocket::get("/this/commits/<commit>")]
+async fn find_commits_this(commit: &str) -> Result<Json<Vec<RepoCommit>>, NotFound<String>> {
+    let commit = client()
+        .commits(github_user(), env!("CARGO_PKG_NAME"))
+        .get(commit)
+        .await;
+
+    match commit {
+        Ok(c)  => Ok(Json(vec![c])),
+        Err(e) => Err(NotFound(e.to_string()))
+    }
+}
+
+#[rocket::get("/<repo>/readme")]
+async fn find_readme(repo: &str) -> Result<Json<Content>, NotFound<String>> {
+    let repo = match get_one_repository(repo).await {
+        Some(r) => r,
+        None  => return Err(NotFound("repository not found".to_string()))
+    };
+
+    client()
+        .repos(github_user(), repo.name)
+        .get_readme()
+        .r#ref("main")
+        .send()
+        .await
+        .map(|rm| Json(rm))
+        .map_err(|e| NotFound(e.to_string()))
+}
+
+#[rocket::get("/<repo>/commits?<page>", rank = 18)]
 async fn list_commits(repo: &str, page: Option<u32>) -> Result<Json<Vec<RepoCommit>>, NotFound<String>> {
     let repo = match get_one_repository(repo).await {
         Some(r) => r,
@@ -55,14 +106,17 @@ async fn list_commits(repo: &str, page: Option<u32>) -> Result<Json<Vec<RepoComm
     }
 }
 
-#[rocket::get("/this/commits?<page>", rank = 1)]
-async fn list_commits_this(page: Option<u32>) -> Redirect {
-    let repo = env!("CARGO_PKG_NAME");
-    let uri  = match page {
-        Some(p) => format!("/github/{repo}/commits?page={p}"),
-        None    => format!("/github/{repo}/commits")
-    };
-    Redirect::permanent(uri)
+#[rocket::get("/this/commits?<page>")]
+async fn list_commits_this(page: Option<u32>) -> Json<Vec<RepoCommit>> {
+    let found = client()
+        .repos(github_user(), env!("CARGO_PKG_NAME"))
+        .list_commits()
+        .branch("main")
+        .page(page.unwrap_or(1))
+        .send()
+        .await
+        .expect("Project commits must exist");
+    Json(found.items)
 }
 
 fn client() -> Octocrab {
@@ -79,7 +133,7 @@ async fn get_one_repository(repo: &str) -> Option<Repository> {
         .await;
 
     match found {
-        Ok(r) if r.visibility.as_ref().is_some_and(|v| v == "public") => Some(r),
+        Ok(r) if r.private.is_some_and(|p| !p) => Some(r),
         Err(_) => {
             log::error!("could not get repository `{repo}` from GitHub");
             None
