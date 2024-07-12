@@ -5,7 +5,7 @@ use rocket::fs::NamedFile;
 use rocket::response::Redirect;
 use rocket::serde::json::{serde_json, Json};
 
-use crate::config::{APPLICATION_ASSETS, APPLICATION_STATIC};
+use crate::config::APPLICATION_ASSETS;
 use crate::models::ContactItem;
 use crate::responders::DownloadFile;
 use crate::public::static_read;
@@ -41,8 +41,7 @@ async fn download(file: PathBuf) -> DownloadFile {
 
 #[rocket::get("/version")]
 async fn version() -> String {
-    let path = Path::new(APPLICATION_STATIC).join("VERSION.txt");
-    std::fs::read_to_string(path).expect("version metadata must exist")
+    crate::config::get_version()
 }
 
 #[rocket::get("/<file..>", rank = 99)]

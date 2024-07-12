@@ -121,10 +121,7 @@ where
     type Output = Ret;
 
     fn should_call(&self) -> bool {
-        match std::env::var("PROFILE") {
-            Ok(profile) if profile == "release" => true,
-            _ => false
-        }
+        matches!(std::env::var("PROFILE"), Ok(profile) if profile == "release")
     }
 
     fn do_call(&self) -> Option<BuildResult<Self::Output>> {

@@ -81,7 +81,7 @@ async fn find_readme(repo: &str) -> Result<Json<Content>, NotFound<String>> {
         .r#ref("main")
         .send()
         .await
-        .map(|rm| Json(rm))
+        .map(Json)
         .map_err(|e| NotFound(e.to_string()))
 }
 

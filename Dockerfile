@@ -5,6 +5,7 @@ COPY ./client/ /client/
 WORKDIR /client
 RUN npm run build
 
+
 # Builds the server application as a barebones
 # executable.
 FROM rust:alpine AS server_builder
@@ -16,6 +17,7 @@ COPY ./Cargo.toml ./Cargo.lock ./build.rs /server/
 RUN apk update && apk add pkgconfig openssl-dev libc-dev
 WORKDIR /server
 RUN cargo build --release
+
 
 # Copies all assets from prior stages, as well as
 # other necessary assets to run the application.
