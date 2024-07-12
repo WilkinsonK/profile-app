@@ -72,6 +72,19 @@ trait DoCall {
     fn should_call(&self) -> bool { true }
 }
 
+struct Always<Call: Fn() ->  BuildResult<Ret>, Ret>(Call);
+
+impl<Call, Ret> DoCall for Always<Call, Ret>
+where
+    Call: Fn() -> BuildResult<Ret>,
+{
+    type Output = Ret;
+
+    fn do_call(&self) -> Option<BuildResult<Self::Output>> {
+        Some((self.0)())
+    }
+}
+
 /// `DoCall` type which allows the callable to
 /// only be executed if the build profile is
 /// `release`.
@@ -161,12 +174,6 @@ fn client_assets_exist() -> bool {
     client_assets().exists()
 }
 
-/// Returns the path to the data assets related
-/// to this application.
-fn data_assets() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("data")
-}
-
 /// Returns the destination path for where the
 /// build front-end application will be moved to.
 fn static_assets() -> PathBuf {
@@ -200,13 +207,21 @@ fn main() -> BuildResult<()> {
         Ok(())
     }).only_if(client_assets_exist))?;
 
-    std::fs::write(
-        data_assets().join("VERSION.txt"),
-        format!("{}/v{}-{}",
-            env!("CARGO_PKG_NAME"),
-            env!("CARGO_PKG_VERSION"),
-            std::env::var("PROFILE").unwrap_or("unknown".into()))
-    )?;
+    do_call(&Always(|| {
+        if !static_assets_exists() {
+            std::fs::create_dir(static_assets())?;
+        }
+        std::fs::write(
+            static_assets().join("VERSION.txt"),
+            format!("{}/v{}-{}",
+                env!("CARGO_PKG_NAME"),
+                env!("CARGO_PKG_VERSION"),
+                std::env::var("PROFILE").unwrap_or("unknown".into()))
+        )?;
+
+        Ok(())
+    }))?;
+
 
     Ok(())
 }

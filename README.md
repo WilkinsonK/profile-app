@@ -28,7 +28,7 @@ This project contains a `Dockerfile` file. This allows us to create an
 image of the built, release, instance that can be distributed across
 multiple containers (hooray).
 
-To build the container you need to ensure that you mount to the `data`
+To build the container you need to ensure that you mount to the `assets`
 directory, but otherwise it should be as simple as:
 ```bash
 $ docker build -t profile-app .

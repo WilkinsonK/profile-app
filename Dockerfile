@@ -20,12 +20,14 @@ RUN cargo build --release
 # Copies all assets from prior stages, as well as
 # other necessary assets to run the application.
 FROM alpine AS final
-# Get ONLY the compiled binary.
-COPY --from=server_builder /server/target/release/server /server/
 # Get ONLY the compiled static assets from the
 # client building stage.
 COPY --from=client_builder /client/build /server/static/
-COPY ./data /server/data
+# Get ONLY the compiled binary and the VERSION.txt
+# file.
+COPY --from=server_builder /server/target/release/server /server/
+COPY --from=server_builder /server/static/VERSION.txt /server/static/
+COPY ./assets /server/assets
 COPY ./Rocket.toml /server/
 # Install necessary assets in order to run
 # executable.

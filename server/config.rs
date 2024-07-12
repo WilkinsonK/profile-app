@@ -5,8 +5,8 @@ pub const APPLICATION_NAME: &str = concat!(
     env!("CARGO_PKG_NAME"),
     "/v",
     env!("CARGO_PKG_VERSION"));
+pub const APPLICATION_ASSETS: &str = relative!("assets");
 pub const APPLICATION_STATIC: &str = relative!("static");
-pub const APPLICATION_DATA:   &str = relative!("data");
 
 /// Gets the personal access token from the
 /// environment.
