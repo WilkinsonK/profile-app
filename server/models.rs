@@ -23,4 +23,6 @@ pub struct FAQItem {
 pub struct Link {
     name: String,
     href: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    icon: Option<String>,
 }

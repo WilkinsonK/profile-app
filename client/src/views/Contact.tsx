@@ -37,7 +37,7 @@ export default function Contact() {
         contact
             .links
             .filter(link => link.name === "LinkedIn")
-            .forEach(link => { linkedInLink = Link.from(link).intoElement(); });
+            .forEach(link => { linkedInLink = Link.from(link).intoElement(true); });
     }
 
     return (

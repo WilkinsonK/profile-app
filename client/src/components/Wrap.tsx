@@ -4,6 +4,6 @@
  * to have properties like `key` available to
  * `React`.
  */
-export default function Wrap(props: { key?: string, children: any[] }) {
+export default function Wrap(props: { key?: string, children: any | any[] }) {
     return <>{props.children}</>
 }

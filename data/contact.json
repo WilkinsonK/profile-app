@@ -10,11 +10,13 @@
         "links": [
             {
                 "name": "LinkedIn",
-                "href": "https://www.linkedin.com/in/keenan-wilkinson-0a23571a8/"
+                "href": "https://www.linkedin.com/in/keenan-wilkinson-0a23571a8/",
+                "icon": "icon/co-linkedin-solid.svg"
             },
             {
                 "name": "Github",
-                "href": "https://github.com/WilkinsonK"
+                "href": "https://github.com/WilkinsonK",
+                "icon": "icon/co-github-solid.svg"
             }
         ],
         "phone": "",

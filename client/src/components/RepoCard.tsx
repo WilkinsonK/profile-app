@@ -1,31 +1,19 @@
-import { Buffer } from "buffer";
-import { Card, Spinner, Stack } from "react-bootstrap";
+import { Card, Placeholder, Spinner, Stack } from "react-bootstrap";
 import { useEffect, useState } from "react";
 
-import { Readme, Repository } from "../models/github";
-import Markdown from "react-markdown";
+import { Repository } from "../models/github";
 
-export function ReadMe(props: { name: string}) {
-    const [loading, setLoading]   = useState(true);
-    const [readmeData, setReadme] = useState(new Readme());
-
-    useEffect(() => {
-        const inner = async () => {
-            const readme = await doFetchReadme(props.name);
-            setReadme(readme);
-            setLoading(false);
-        };
-        inner();
-    }, []);
-
-    let data = <><Spinner></Spinner></>;
-    if (!loading) {
-        let readme = Buffer
-            .from(readmeData.content, "base64")
-            .toString();
-        data = <Markdown>{readme}</Markdown>;
-    }
-    return data;
+function MetaBadge(props: { icon: string, children?: any | any[] }) {
+    return (
+        <Stack direction="horizontal" gap={2}>
+            <Card.Img
+                src={props.icon}
+                id="repo-icon"
+                className="vlb-icon"
+            />
+            <>{props.children}</>
+        </Stack>
+    )
 }
 
 export default function RepoCard(props: { name: string }) {
@@ -39,60 +27,48 @@ export default function RepoCard(props: { name: string }) {
             setLoading(false);
         };
         inner();
-    }, []);
+    }, [props]);
 
-    let content = <><Spinner></Spinner></>
-    let license = <i>No Licsense</i>
+    let header   = <><Spinner></Spinner></>;
+    let content  = <><Placeholder></Placeholder></>;
+    let license  = <i>No Licsense</i>;
+    let language = <i>No Language</i>;
     if (!loading) {
         if (repoData.license !== undefined) {
             license = <>{repoData.license.spdx_id}</>
         }
+        language = <>{repoData.language}</>
+
+        header = (
+            <>
+                <a href={repoData.html_url} target="_blank" rel="noreferrer" id="repo-icon-link">
+                    <MetaBadge icon="icon/book-solid.svg">
+                        <Card.Title>{repoData.name}</Card.Title>
+                    </MetaBadge>
+                </a>
+            </>
+        )
         content = (
             <>
-            <a href={repoData.html_url} target="_blank" rel="noreferrer" id="repo-icon-link">
+                <Card.Text>{repoData.description}</Card.Text>
                 <Stack direction="horizontal" gap={2}>
-                    <Card.Img
-                        src="icon/book-solid.svg"
-                        id="repo-icon"
-                        className="vlb-icon"
-                    />
-                    <Card.Title>{repoData.name}</Card.Title>
+                    <MetaBadge icon="icon/file-code-solid.svg">
+                        <Card.Text>{language}</Card.Text>
+                    </MetaBadge>
+                    <MetaBadge icon="icon/scale-solid.svg">
+                        <Card.Text>{license}</Card.Text>
+                    </MetaBadge>
                 </Stack>
-            </a>
-            <Card.Text>{repoData.description}</Card.Text>
-            <Stack direction="horizontal" gap={2}>
-                <Card.Img
-                    src="icon/scale-solid.svg"
-                    id="repo-icon"
-                    className="vlb-icon"
-                />
-                <Card.Text>{license}</Card.Text>
-            </Stack>
             </>
         );
     }
 
     return (
-        <Card className="ms-auto">
+        <Card className="ms-auto" style={{ width: '50%' }}>
+            <Card.Header>{header}</Card.Header>
             <Card.Body>{content}</Card.Body>
         </Card>
     );
-}
-
-async function doFetchReadme(name: string): Promise<Readme> {
-    let data;
-    try {
-        const res = await fetch(`/github/${name}/readme`);
-        if (!res.ok) {
-            throw new Error(`HTTP error: Status ${res.status}`);
-        }
-        data = await res.json();
-    } catch (err) {
-        console.log(`failed trying to fetch repo data: ${err}`);
-        data = new Repository();
-    } finally {
-        return data;
-    }
 }
 
 async function doFetchRepository(name: string): Promise<Repository> {

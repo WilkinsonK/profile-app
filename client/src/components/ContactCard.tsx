@@ -26,8 +26,10 @@ export default function CommonContactCard(props: ContactProps) {
                 <p>
                     {email}
                     {phone}
-                    | {props.links.map(link => <Wrap key={link.name}>{Link.from(link).intoElement()} | </Wrap>)}
                 </p>
+                <Stack direction="horizontal" gap={2}>
+                    {props.links.map(link => <Wrap key={link.name}>{Link.from(link).intoElement()}</Wrap>)}
+                </Stack>
             </Card.Body>
             <Card.Footer>
                 <Stack direction="horizontal" gap={1}>

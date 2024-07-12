@@ -1,7 +1,7 @@
 use rocket::{Build, Rocket};
 
-pub mod github;
-pub mod index;
+mod github;
+mod index;
 
 type Mounter = fn(Rocket<Build>) -> Rocket<Build>;
 const MOUNTERS: &[Mounter] = &[

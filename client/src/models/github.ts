@@ -36,6 +36,7 @@ export class Repository {
     description?:    string;
     git_url!:        string;
     html_url!:       string;
+    language!:       string;
     license?:        License;
     name!:           string;
     private!:        boolean;
