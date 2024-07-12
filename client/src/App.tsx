@@ -53,6 +53,7 @@ export function Navigation() {
               onClick={togglePreferredTheme}
               src={getPreferredThemeIcon()}
               id="theme-toggle-button"
+              className="vlb-icon"
               roundedCircle>
           </Image>
         </Container>

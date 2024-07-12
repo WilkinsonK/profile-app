@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 
 import ContactCard, { ContactProps, doFetchContacts } from "../components/ContactCard";
 import { Link } from '../common/link';
@@ -20,7 +20,7 @@ export default function Contact() {
     // Can only render these components after we
     // have acquired our needed contact details.
     // Must wait until after loading is complete.
-    let card = <></>;
+    let card = <><Spinner></Spinner></>;
     let linkedInLink = <></>;
     if (!loading) {
         card = (
