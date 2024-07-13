@@ -5,7 +5,7 @@ use rocket::fs::NamedFile;
 use rocket::response::Redirect;
 use rocket::serde::json::{serde_json, Json};
 
-use crate::config::APPLICATION_ASSETS;
+use crate::config::{get_version, APPLICATION_ASSETS};
 use crate::models::ContactItem;
 use crate::responders::DownloadFile;
 use crate::public::static_read;
@@ -41,7 +41,7 @@ async fn download(file: PathBuf) -> DownloadFile {
 
 #[rocket::get("/version")]
 async fn version() -> String {
-    crate::config::get_version()
+    get_version()
 }
 
 #[rocket::get("/<file..>", rank = 99)]

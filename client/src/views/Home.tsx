@@ -53,7 +53,6 @@ export default function Home() {
                 things I've either worked on or am currently still that meets
                 the requirement.
             </p>
-            <br></br>
             <div>
                 <RepoCard name="vixen" />
                 <p>
@@ -72,7 +71,6 @@ export default function Home() {
                     care to) achieve. Constantly still in development, but an
                     excellent source of real-world challenges and discovery.
                 </p>
-                <br></br>
                 <RepoCard name="xapi-oxidized" />
                 <p>
                     During my time at Washington University, there was a regular
@@ -86,16 +84,43 @@ export default function Home() {
                 <p>
                     In spite of the nature of what an XNAT is supposed to
                     service. The application itself is simply that. A web
-                    server. Not to be treated as somthing more than necessary, <b>xapi-oxidized</b> was
-                    designed to take the "Keep It Simple S.." approach. This
-                    allowed for more control and customized.
-                    [TODO]
+                    server. Not to be treated as somthing more than necessary,
+                    xapi-oxidized was designed to take the "Keep It Simple S.."
+                    approach. This allowed for more control and customized
+                    behavior alternatives did not allow with their opinionated
+                    design.
                 </p>
-                <br></br>
                 <RepoCard name="todo_app" />
-                <p>Lorem ipsum</p>
+                <p>
+                    A standard cross-platform desktop application. Perhaps not
+                    the most creative piece of material to hit the market, but
+                    we all gotta start somewhere.
+                </p>
+                <p>
+                    No, this isn't a revolutionary idea. In fact, this one in
+                    particular has been beaten into the ground so much that it's
+                    TODone-for. But I'm still proud of it all the same. This app
+                    marks the first time I was able to complete a desktop
+                    applictation-- at all-- while overcoming my irrational fear
+                    of UI/UX design.
+                </p>
                 <RepoCard name="pyg" />
-                <p>A møøse once bit my sister</p>
+                <p>
+                    Pyg. Good old Pyg. A library wrapper around the Python C
+                    ABI. We wouldn't have this attempt at a Go library if not
+                    for the fact that alternatives were not up-to-date enough to
+                    get started with on more modern projects. At the time, the
+                    latest supported version of the ABI in Go was 3.7 or less,
+                    and was already considered unsupported by the Python
+                    organization.
+                </p>
+                <p>
+                    Still lacking in full functionality. I again am still very
+                    proud of this project and the potential it has moving
+                    forward. At the very least, it should be compatible with
+                    future versions of the Python C ABI, and to that effect will
+                    mean it can be developed further.
+                </p>
             </div>
         </Container>
     )

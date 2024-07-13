@@ -161,14 +161,14 @@ where
 
 /// Returns the path to the assets for building
 /// the front-end application.
-fn client_assets() -> PathBuf {
+fn client_source() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("client")
 }
 
 /// Determines if `client` subdirectory exists in
-/// the project assets.
-fn client_assets_exist() -> bool {
-    client_assets().exists()
+/// the project source.
+fn client_source_exists() -> bool {
+    client_source().exists()
 }
 
 /// Returns the destination path for where the
@@ -193,16 +193,16 @@ fn main() -> BuildResult<()> {
             .spawn()?
             .wait()?;
         Ok(())
-    }).only_if(client_assets_exist))?;
+    }).only_if(client_source_exists))?;
 
     do_call(&OnRelease::new(|| {
         println!("BUILD: moving built front-end assets to `static`");
         if static_assets_exists() {
             std::fs::remove_dir_all(static_assets())?;
         }
-        copy_dir::copy_dir(client_assets().join("build"), "static")?;
+        copy_dir::copy_dir(client_source().join("build"), "static")?;
         Ok(())
-    }).only_if(client_assets_exist))?;
+    }).only_if(client_source_exists))?;
 
     do_call(&Always(|| {
         if !static_assets_exists() {

@@ -28,15 +28,33 @@ This project contains a `Dockerfile` file. This allows us to create an
 image of the built, release, instance that can be distributed across
 multiple containers (hooray).
 
+#### Building the Container ####
 To build the container you need to ensure that you mount to the `assets`
 directory, but otherwise it should be as simple as:
+
 ```bash
-$ docker build -t profile-app .
+$ docker build -t wilkinsonk/vlb-profile-app .
 $ docker run -it --name monsterous-fart -p 8000:8000 profile-app -e GITHUB_ACCESS_TOKEN=<person_access_token> -e GITHUB_USER=<username>
 ```
 
+#### Container Composition ####
+The alternative is to allow the preconfigured compose file, using
+`docker compose` to orchestrate containter runtime instead. This comes
+with a few additional features like accepting a `.env` file with all
+environment variables preset and auto mounts the `assets` directory as
+mentioned.
+
+```bash
+$ docker compose up
+```
+
+It is important to know that the initial container must be built. In
+spite of efforts to lessen the production costs of build-time... it
+still takes awhile. Especially where compose will try to build the
+image for every single instance **VLB** listed in the compose file.
+
 ## Remaining Tasks ##
-- [ ] expose my top pinned projects on GitHub.
+- [x] expose my top pinned projects on GitHub.
 - [ ] expose commits to main for this project.
 - [ ] enable Prometheus metrics for API calls.
 - [ ] restrict access with token authentication.

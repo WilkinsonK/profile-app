@@ -1,0 +1,68 @@
+services:
+  # containers are named after their relative
+  # offset to the internal network configuration.
+  vlb-profile-delta3:
+    image: wilkinsonk/vlb-profile-app
+    environment:
+      - GITHUB_ACCESS_TOKEN
+      - GITHUB_USER
+    env_file: .env
+    volumes:
+      - type: bind
+        source: ./assets
+        target: /server/assets
+    develop:
+      watch:
+        - action: sync
+          path: ./client/build
+          target: /server/static
+        - action: rebuild
+          path: ./server/
+        - action: rebuild
+          path: ./build.rs
+    networks:
+      vlb:
+        ipv4_address: "172.59.0.3"
+
+  vlb-profile-delta4:
+    image: wilkinsonk/vlb-profile-app
+    environment:
+      - GITHUB_ACCESS_TOKEN
+      - GITHUB_USER
+    env_file: .env
+    volumes:
+      - type: bind
+        source: ./assets
+        target: /server/assets
+    develop:
+      watch:
+        - action: sync
+          path: ./client/build
+          target: /server/static
+        - action: rebuild
+          path: ./server/
+        - action: rebuild
+          path: ./build.rs
+    networks:
+      vlb:
+        ipv4_address: "172.59.0.4"
+
+  vlb-proxy:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    networks:
+      vlb:
+        ipv4_address: "172.59.0.2"
+
+networks:
+  vlb:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.59.0.0/16"
+      options:
+        alpha: "0"
+        beta: "1"
+        gamma: "2"

@@ -3,6 +3,6 @@ node_modules/
 target/
 static/
 
-!example.env
 *.env
+!example.env
 VERSION.txt
