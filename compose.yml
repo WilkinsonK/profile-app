@@ -48,10 +48,14 @@ services:
         ipv4_address: "172.59.0.4"
 
   vlb-proxy:
-    build:
-      context: ./nginx
+    image: nginx:alpine-slim
+    volumes:
+      - type: bind
+        source: ./proxy/nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
     ports:
-      - "80:80"
+      - 80:80
     networks:
       vlb:
         ipv4_address: "172.59.0.2"
