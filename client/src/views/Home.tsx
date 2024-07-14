@@ -1,14 +1,21 @@
 import { Carousel, Container, Image } from "react-bootstrap";
 import RepoCard from "../components/RepoCard";
 
+function CarouselImg() {
+    return (
+        <Image
+            src="carousel-background.png"
+            style={{ height: "100%", width: "100%" }}
+        />
+    )
+}
+
 export default function Home() {
     return (
         <Container>
             <Carousel>
                 <Carousel.Item>
-                    <Image
-                        src="carousel-background.png"
-                    />
+                    <CarouselImg />
                     <Carousel.Caption>
                         <h3>Over Achiever</h3>
                         <p>
@@ -18,18 +25,14 @@ export default function Home() {
                     </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item>
-                    <Image
-                        src="carousel-background.png"
-                    />
+                    <CarouselImg />
                     <Carousel.Caption>
                         <h3>Organized & Structured</h3>
                         <p>Excellence that is on the verge of OCD.</p>
                     </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item>
-                    <Image
-                        src="carousel-background.png"
-                    />
+                    <CarouselImg />
                     <Carousel.Caption>
                         <h3>Team Player</h3>
                         <p>
