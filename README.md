@@ -54,6 +54,7 @@ still takes awhile. Especially where compose will try to build the
 image for every single instance **VLB** listed in the compose file.
 
 ## Remaining Tasks ##
+- [x] setup docker and docker compose.
 - [x] expose my top pinned projects on GitHub.
 - [ ] expose commits to main for this project.
 - [ ] enable Prometheus metrics for API calls.

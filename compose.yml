@@ -2,63 +2,73 @@ services:
   # containers are named after their relative
   # offset to the internal network configuration.
   vlb-profile-delta3:
-    image: wilkinsonk/vlb-profile-app
+    extends:
+      file: compose.services.yml
+      service: vlb-profile-web
     environment:
-      - GITHUB_ACCESS_TOKEN
-      - GITHUB_USER
-    env_file: .env
-    volumes:
-      - type: bind
-        source: ./assets
-        target: /server/assets
-    develop:
-      watch:
-        - action: sync
-          path: ./client/build
-          target: /server/static
-        - action: rebuild
-          path: ./server/
-        - action: rebuild
-          path: ./build.rs
-    networks:
-      vlb:
-        ipv4_address: "172.59.0.3"
+      - SERVICE_IPV4_ADDR=172.59.0.3
+      - VLB_HOSTNAME=${NAME}-delta3
+    ports:
+      - 8003:8000
 
   vlb-profile-delta4:
-    image: wilkinsonk/vlb-profile-app
+    extends:
+      file: compose.services.yml
+      service: vlb-profile-web
     environment:
-      - GITHUB_ACCESS_TOKEN
-      - GITHUB_USER
-    env_file: .env
-    volumes:
-      - type: bind
-        source: ./assets
-        target: /server/assets
-    develop:
-      watch:
-        - action: sync
-          path: ./client/build
-          target: /server/static
-        - action: rebuild
-          path: ./server/
-        - action: rebuild
-          path: ./build.rs
-    networks:
-      vlb:
-        ipv4_address: "172.59.0.4"
-
-  vlb-proxy:
-    image: nginx:alpine-slim
-    volumes:
-      - type: bind
-        source: ./proxy/nginx.conf
-        target: /etc/nginx/conf.d/default.conf
-        read_only: true
+      - SERVICE_IPV4_ADDR=172.59.0.4
+      - VLB_HOSTNAME=${NAME}-delta4
     ports:
-      - 80:80
-    networks:
-      vlb:
-        ipv4_address: "172.59.0.2"
+      - 8004:8000
+
+  vlb-profile-delta5:
+    extends:
+      file: compose.services.yml
+      service: vlb-profile-web
+    environment:
+      - SERVICE_IPV4_ADDR=172.59.0.5
+      - VLB_HOSTNAME=${NAME}-delta5
+    ports:
+      - 8005:8000
+
+  vlb-profile-delta6:
+    extends:
+      file: compose.services.yml
+      service: vlb-profile-web
+    environment:
+      - SERVICE_IPV4_ADDR=172.59.0.5
+      - VLB_HOSTNAME=${NAME}-delta6
+    ports:
+      - 8006:8000
+
+  vlb-profile-delta7:
+    extends:
+      file: compose.services.yml
+      service: vlb-profile-web
+    environment:
+      - SERVICE_IPV4_ADDR=172.59.0.5
+      - VLB_HOSTNAME=${NAME}-delta7
+    ports:
+      - 8007:8000
+
+  vlb-profile-delta8:
+    extends:
+      file: compose.services.yml
+      service: vlb-profile-web
+    environment:
+      - SERVICE_IPV4_ADDR=172.59.0.5
+      - VLB_HOSTNAME=${NAME}-delta8
+    ports:
+      - 8008:8000
+
+  vlb-proxy-delta2:
+    extends:
+      file: compose.services.yml
+      service: vlb-profile-proxy
+    environment:
+      - SERVICE_IPV4_ADDR=172.59.0.2
+    ports:
+      - 8002:80
 
 networks:
   vlb:
@@ -70,3 +80,4 @@ networks:
         alpha: "0"
         beta: "1"
         gamma: "2"
+ 

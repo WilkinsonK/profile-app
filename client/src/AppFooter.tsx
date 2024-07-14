@@ -1,24 +1,25 @@
 import { useEffect, useState } from "react";
 import { Stack } from "react-bootstrap";
-import { doFetchAppName } from "./common/details";
+import { doFetchAppHost, doFetchAppName } from "./common/details";
 
 export default function AppFooter() {
-    const [appName, setAppName] = useState("");
+    const [appName, setAppName] = useState("[build]");
+    const [appHost, setAppHost] = useState("[machine]");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const inner = async () => {
             const fetched = await doFetchAppName();
-            setAppName(fetched);
+            await Promise.all([
+                doFetchAppHost().then(hostname => { setAppHost(hostname)}),
+                doFetchAppName().then(version  => { setAppName(version)}),
+            ]);
             setLoading(false);
         };
         inner();
     }, []);
 
-    let nameRender = <></>
-    if (!loading) {
-        nameRender = <i>{appName}</i>
-    }
+    let nameRender = <i>({appHost}; {appName})</i>
     return (
         <Stack direction="horizontal" gap={1}>
             <div className="p-2"></div>

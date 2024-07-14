@@ -1,0 +1,36 @@
+services:
+  vlb-profile-web:
+    image: wilkinsonk/vlb-profile-app
+    environment:
+      - GITHUB_ACCESS_TOKEN
+      - GITHUB_USER
+    env_file: .env
+    volumes:
+      # Child services to this service definition
+      # should all share READ access to the assets
+      # directory.
+      - type: bind
+        source: ./assets
+        target: /server/assets
+        read_only: true
+      # Rocket config should be accessed from
+      # *any* child service of this definition.
+      - type: bind
+        source: ./Rocket.toml
+        target: /server/Rocket.toml
+        read_only: true
+    networks:
+      vlb:
+        ipv4_address: ${SERVICE_IPV4_ADDR}
+
+  vlb-profile-proxy:
+    image: nginx:alpine-slim
+    env_file: .env
+    volumes:
+      - type: bind
+        source: ./proxy/nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+    networks:
+      vlb:
+        ipv4_address: ${SERVICE_IPV4_ADDR}
